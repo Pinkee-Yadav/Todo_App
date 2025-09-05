@@ -1,14 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Home Page</h1>
-    <a href="{% url 'register'%}">Register </a>
-    <a href="{% url 'login'%}">Login </a>
-    <a href="{% url 'logout'%}">Logout </a>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+<div class="col-md-4">
+<div class="card mb-3 shadow-sm">
+<div class="card-body">
+<h5 class="card-title">Add Task</h5>
+<form method="post" action="{% url 'add_task' %}">{% csrf_token %}
+{{ form.non_field_errors }}
+<div class="mb-2">{{ form.title }}</div>
+<div class="mb-2">{{ form.description }}</div>
+<div class="d-grid gap-2">
+<button class="btn btn-primary">Add</button>
+</div>
+</form>
+</div>
+</div>
+<div class="list-group">
+<a href="?filter=all" class="list-group-item list-group-item-action {% if filter_q == 'all' %}active{% endif %}">All</a>
+<a href="?filter=active" class="list-group-item list-group-item-action {% if filter_q == 'active' %}active{% endif %}">Active</a>
+<a href="?filter=completed" class="list-group-item list-group-item-action {% if filter_q == 'completed' %}active{% endif %}">Completed</a>
+</div>
+</div>
+<div class="col-md-8">
+<div class="card shadow-sm">
+<div class="card-body">
+<h5 class="card-title">Your Tasks</h5>
+{% if tasks.count == 0 %}
+<p class="text-muted">No tasks yet — add one!</p>
+{% else %}
+<ul class="list-group">
+{% for task in tasks %}
+<li class="list-group-item d-flex justify-content-between align-items-start">
+<div>
+<form method="post" action="{% url 'toggle_complete' task.pk %}" style="display:inline;">{% csrf_token %}
+<button class="btn btn-sm btn-outline-secondary me-2" title="Toggle complete">{% if task.completed %}✔{% else %}○{% endif %}</button>
+</form>
+<strong class="{% if task.completed %}text-decoration-line-through text-muted{% endif %}">{{ task.title }}</strong>
+<div class="small text-muted">{{ task.description|linebreaksbr }}</div>
+</div>
+<div>
+<a href="{% url 'edit_task' task.pk %}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+<a href="{% url 'delete_task' task.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+</div>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

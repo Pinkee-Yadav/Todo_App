@@ -1,6 +1,4 @@
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-h2 {
-  color: #333;
-}
+body { background: #f7fafc; }
+.card { border-radius: 12px; }
+.navbar-brand { font-weight: 700; }
+.list-group-item { border: none; border-radius: 8px; margin-bottom: 6px; }
